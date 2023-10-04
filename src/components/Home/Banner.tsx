@@ -3,7 +3,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import styled from "styled-components";
 import bannerPicture from "../../assets/images/lungern.jpg";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const Header = styled.header`
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
@@ -73,6 +73,9 @@ export const Banner = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [buttonText, setButtonText] = useState("Give me a like!");
 
+  const { scrollY } = useScroll();
+  const rotate = useTransform(scrollY, [50, 700], [0, 10], { clamp: false });
+
   function handleLike() {
     setLikeCount(likeCount + 1);
     if (likeCount === 0) {
@@ -86,26 +89,28 @@ export const Banner = () => {
     <Header>
       <Title> Hi! My name is Wai Ian. </Title>
       <SubTitle> I am a junior software developer.</SubTitle>
-      <ButtonDiv>
-        <Button
-          onClick={handleLike}
-          as={motion.button}
-          whileHover={whileHover}
-          whileTap={whileTap}
-        >
-          {buttonText}
-        </Button>
-        {likeCount === 0 ? (
-          <Icon>
-            <FontAwesomeIcon icon={faHeart} color="#ffffff" />
-          </Icon>
-        ) : (
-          <Icon>
-            <FontAwesomeIcon icon={faHeart} color="#ff0000" />
-          </Icon>
-        )}
-        {likeCount > 1 && <Text> + {likeCount}</Text>}
-      </ButtonDiv>
+      <motion.div style={{ rotate }}>
+        <ButtonDiv>
+          <Button
+            onClick={handleLike}
+            as={motion.button}
+            whileHover={whileHover}
+            whileTap={whileTap}
+          >
+            {buttonText}
+          </Button>
+          {likeCount === 0 ? (
+            <Icon>
+              <FontAwesomeIcon icon={faHeart} color="#ffffff" />
+            </Icon>
+          ) : (
+            <Icon>
+              <FontAwesomeIcon icon={faHeart} color="#ff0000" />
+            </Icon>
+          )}
+          {likeCount > 1 && <Text> + {likeCount}</Text>}
+        </ButtonDiv>
+      </motion.div>
     </Header>
   );
 };
